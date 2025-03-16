@@ -1,0 +1,320 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class Tree {
+    int val;
+    Tree left;
+    Tree right;
+    private Tree root;
+
+    public Tree(int item) {
+        val = item;
+        left = right = null;
+    }
+    public Tree insert(int value) {
+        if (root == null) {
+            Tree newNode = new Tree(value);
+            return root;
+        }
+        if (root.val < value) {
+            root.left = root.left.insert(value);
+        } else if (root.val > value) {
+            root.right = root.right.insert(value);
+        }
+        return root;
+    }public Tree sortedArrayToBST(int[] nums) {
+        return middleFind(nums, 0, nums.length - 1);
+    }
+    public Tree middleFind(int [] nums, int start, int finish) {
+        if (start > finish) {
+            return null;
+        }
+        int mid= start+(finish-start)/2;
+        Tree root= new Tree(nums[mid]);
+        root.left=middleFind(nums,start,mid-1);
+        root.right=middleFind(nums,mid+1,finish);
+        return root;
+
+    }
+    public boolean isValidBST(Tree root) {
+        return validate(root, null, null);
+    }
+    private boolean validate(Tree node, Integer min, Integer max) {
+        if (node == null) {
+            return true;
+        }
+        if ((min != null && node.val <= min) || (max != null && node.val >= max)) {
+            return false;
+        }
+        return validate(node.left, min, node.val) && validate(node.right, node.val, max);
+    }
+    public boolean searchRec(Tree root, int key) {
+        if (root == null) {
+            return false;
+        }
+        if (root.val == key) {
+            return true;
+        }
+        if (key < root.val) {
+            return searchRec(root.left, key);
+        } else {
+            return searchRec(root.right, key);
+        }
+    }
+    public void inorderRec(Tree root) {
+        if (root != null) {
+            inorderRec(root.left);
+            System.out.print(root.val + " ");
+            inorderRec(root.right);
+        }
+    }
+    public void preorderRec(Tree root) {
+        if (root != null) {
+            System.out.print(root.val + " "); // Kök
+            preorderRec(root.left);           // Sol alt ağaç
+            preorderRec(root.right);          // Sağ alt ağaç
+        }
+    }
+    public void postorderRec(Tree root) {
+        if (root != null) {
+            postorderRec(root.left);         // Sol alt ağaç
+            postorderRec(root.right);        // Sağ alt ağaç
+            System.out.print(root.val + " "); // Kök
+        }
+    }
+    public Tree deleteRec(Tree root, int key) {
+        if (root == null) {
+            return null;
+        }
+        if(key<root.val){
+            root.left = deleteRec(root.left, key);
+        }
+        else if(key>root.val){
+            root.right = deleteRec(root.right, key);
+        }else{
+            if(root.left==null){
+                return root.right;
+            }else if(root.right==null){
+                return root.left;
+            }
+            root.val=minValue(root.right);
+            root.right=deleteRec(root.right, root.val);
+        }
+        return root;
+    }
+    public int minValue(Tree root){
+        int minValue=root.val;
+        while(root.left!=null){
+            root=root.left;
+            minValue=root.val;
+        }
+        return minValue;
+    }
+    public int findDistance(Tree root1, Tree root2){
+        if(root1==null && root2==null){
+            return 0;
+        }else{
+           Tree ortakAta= findOrtaNokta(root, root1.val, root2.val);
+           return findLevel(ortakAta, root1.val, 0)+ findLevel(ortakAta, root2.val, 0);
+        }
+    }
+    public Tree findOrtaNokta(Tree root, int root1,int root2){
+        if(root==null){
+            return null;
+        }if(root.val<root1 && root.val<root2){
+            return findOrtaNokta(root.right,root1,root2);
+        }if(root.val>root1 && root.val>root2){
+            return findOrtaNokta(root.left,root1,root2);
+        }
+        return root;
+    }
+    public int findLevel(Tree node , int val , int level) {
+        if(root==null){
+            return -1;
+        }if(node.val==val){
+            return level;
+        }
+        if (val < root.val) {
+            return findLevel(root.left, val, level + 1);
+        } else {
+            return findLevel(root.right, val, level + 1);
+        }
+    }
+    public int level2(Tree root){
+        if(root==null){
+            return 0;
+        }
+        int leftdepth=level2(root.left);
+        int rightdepth=level2(root.right);
+        return Math.max(leftdepth,rightdepth)+1;
+    }
+    public int findRank(Tree node, int key) {
+        int rank=-1;
+        if (node == null) {
+            return -1;
+        }
+        int leftRank = findRank(node.left, key);
+        if (leftRank != -1) {
+            return leftRank;
+        }
+        rank++;
+        if (node.val == key) {
+            return rank;
+        }
+        return findRank(node.right, key);
+    }
+    public int findKthSmallest(Tree node, int k) {
+        int count=-1;
+
+        if (node == null) {
+            return -1;
+        }
+        int left = findKthSmallest(node.left, k);
+
+        if (left != -1) {
+            return left;
+        }
+        count++;
+
+        if (count == k) {
+            return node.val;
+        }
+
+        return findKthSmallest(node.right, k);
+    }
+    public void printInRangeRec(Tree node, int low, int high) {
+        if (node == null) return;
+
+        // Eğer düğümün değeri aralığın alt sınırından büyükse, sol alt ağacı ziyaret et
+        if (node.val > low) {
+            printInRangeRec(node.left, low, high);
+        }
+
+        // Eğer düğüm aralıktaysa, değeri yazdır
+        if (node.val >= low && node.val <= high) {
+            System.out.print(node.val + " ");
+        }
+
+        // Eğer düğümün değeri aralığın üst sınırından küçükse, sağ alt ağacı ziyaret et
+        if (node.val < high) {
+            printInRangeRec(node.right, low, high);
+        }
+    }
+    public int maxPathSumRec(Tree node) {
+        int maxSum=Integer.MIN_VALUE;
+        if (node == null) return 0;
+        int leftSum = Math.max(0, maxPathSumRec(node.left));
+        int rightSum = Math.max(0, maxPathSumRec(node.right));
+        maxSum = Math.max(maxSum, leftSum + rightSum + node.val);
+        return node.val + Math.max(leftSum, rightSum);
+    }
+    public boolean balanced(Tree root1, Tree root2) {
+        if (root1 == null && root2 == null) {
+            return true;
+        }
+        if (root1 != null && root2 != null) {
+            return (root1.left == root2.right)
+                    && (root1.right == root2.left)
+                    && balanced(root1.left, root2.right)
+                    && balanced(root1.right, root2.left);
+        }
+        return false;
+    }
+
+}
+
+
+
+
+class TreeTraversal {
+    public void printLeafNodes(Tree root) {
+        if (root == null) {
+            return;
+        }
+
+
+        if (root.left == null && root.right == null) {
+            System.out.println(root.val);
+        }
+
+        // Sol alt a�a�
+        if (root.left != null) {
+            printLeafNodes(root.left);
+        }
+
+        // Sa� alt a�a�
+        if (root.right != null) {
+            printLeafNodes(root.right);
+        }
+    }
+
+    public void printPaths(Tree root) {
+        List<Integer> path = new ArrayList<>();
+        findPaths(root, path);
+    }
+
+    // Recursive fonksiyon: Her bir yolu bulur ve yazd�r�r
+    private void findPaths(Tree node, List<Integer> path) {
+        if (node == null) {
+            return;
+        }
+
+        // Mevcut d���m� yola ekle
+        path.add(node.val);
+
+        // E�er yaprak d���m�yse, yolu yazd�r
+        if (node.left == null && node.right == null) {
+            System.out.println(path);
+        } else {
+            // Sol ve sa� alt d���mlere git
+            findPaths(node.left, new ArrayList<>(path));
+            findPaths(node.right, new ArrayList<>(path));
+        }
+    }
+
+    // Her d���m�n de�erini toplar ve alt d���mleri gezer
+    public int go(Tree root) {
+        if (root == null) {
+            return 0;  // E�er d���m null ise toplam 0
+        }
+
+        // Mevcut d���m�n de�erini ve alt d���mlerin toplamlar�n� al
+        int leftSum = go(root.left);   // Sol alt a�a� toplam�
+        int rightSum = go(root.right); // Sa� alt a�a� toplam�
+
+        // Mevcut d���m�n kendi de�eri + sol alt a�a� + sa� alt a�a�
+        return root.val + leftSum + rightSum;
+    }
+
+    public boolean findPath(Tree root, int target) {
+        // E�er d���m null ise, bu yol ge�erli de�ildir
+        if (root == null) {
+            return false;
+        }
+
+        // Hedefe ula�mak i�in kalan hedef de�er
+        target -= root.val;
+
+        // E�er yaprak d���me ula��ld�ysa ve hedef 0 ise, yolu bulduk
+        if (root.left == null && root.right == null) {
+            return target == 0;
+        }
+
+        // Sol veya sa� alt a�aca git ve hedef de�eri kontrol et
+        return findPath(root.left, target) || findPath(root.right, target);
+    }
+    public static void main(String[] args) {
+        Tree root = new Tree(1);
+        root.left = new Tree(2);
+        root.right = new Tree(3);
+        root.left.left = new Tree(4);
+        root.left.right = new Tree(5);
+        root.right.left = new Tree(6);
+        root.right.right = new Tree(7);
+
+        TreeTraversal treeTraversal = new TreeTraversal();
+        System.out.println("Leaf nodes of the tree:");
+        treeTraversal.printLeafNodes(root);  // T�m yaprak d���mleri yazd�r�r
+    }
+}
+
