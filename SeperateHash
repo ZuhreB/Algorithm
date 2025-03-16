@@ -1,0 +1,76 @@
+package stack;
+
+import java.util.LinkedList;
+
+public class SeperateHash {
+	private static int CAPASITY=100;
+	private LinkedList<Integer> [] hashtable ;
+	public int size;
+	
+	public SeperateHash() {
+		this.size=0;
+		this.CAPASITY=100;
+		this.hashtable =new LinkedList[CAPASITY];
+		for(int i=0;i<CAPASITY;i++) {
+			hashtable[i]=new LinkedList<>();
+		}
+	}
+	private int hash(int key) {
+		return key%CAPASITY;
+	}
+	public void rehash() {
+		CAPASITY*=2;
+		LinkedList<Integer>[] oldtable=hashtable;
+		hashtable=new LinkedList[CAPASITY];
+		for(int i=0;i<CAPASITY;i++) {
+			hashtable[i]=new LinkedList<>();
+		}
+		for (int i =0;i<CAPASITY;i++) {
+			for (int j =0;j<hashtable[i].size();j++){
+				insert(i);	
+			}
+		}
+	}
+	public void insert(int key) {
+		if(size>=CAPASITY/2) {
+			rehash();
+		}
+		int i=0;
+		int hash;
+		
+			hash=hash(key);
+			if(!hashtable[hash].contains(key)) {
+				hashtable[hash].addFirst(key);
+			}
+		
+	}
+	public boolean contains(int key) {
+		int hash=hash(key);
+		if( hashtable[hash].contains(key)) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	public void delete(int key) {
+	    int hash = hash(key);
+	    
+	    // Hash değeri doğru bir bucket'ı işaret ettiğinden emin ol
+	    if (hashtable[hash] != null) {
+	        // LinkedList'te bulunan öğeyi sil
+	        if (hashtable[hash].contains(key)) {
+	            hashtable[hash].remove(Integer.valueOf(key));
+	            size--;  // Silindiğinde, boyutu azalt
+	        }
+	    }
+	}
+	public void printTable() {
+        for (int i = 0; i < CAPASITY; i++) {
+            System.out.print("Bucket " + i + ": ");
+            for (Integer key : hashtable[i]) {
+                System.out.print(key + " ");
+            }
+            System.out.println();
+        }
+    }
+}
