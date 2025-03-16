@@ -1,0 +1,352 @@
+package ce221;
+
+public class MinHeap <AnyType extends Comparable<? super AnyType>>{
+ private static final int DEFAULT_CAPACITY=10;
+ private int currentSize;
+ private AnyType [] array ;
+ 
+ public MinHeap() {
+	 this(DEFAULT_CAPACITY);
+ }
+ public MinHeap(int capacity) {
+	 currentSize=0;
+	 array=(AnyType [])new Comparable[capacity+1];
+ }
+ public MinHeap(AnyTypes[] items) {
+	 currentSize=items.length;
+	 array=(Anytype [] )new Comparable [(currentSize*2)*11/10];
+	 int i=1;
+	 for(AnyType item :items) {
+		 array[i++]=item;
+	 }
+	 buildHeap();
+ }
+ public AnyType findMin() {
+	 if(isEmpty()) throw new UnderflowException();
+	 return array[1];
+ }
+ public boolean isEmpty() {
+	 return currentSize==0;
+ }
+ public void makeEmpty() {
+	 currentSize=0;
+ }
+ public void insert(Anytype x) {
+	 if(currentSize==array.length-1) {
+		 enlargeArray(array.length*2+1);
+	 }
+	 int hole=++currentSize;
+	 for(array[0]=x;x.compareTo(array[hole / 2]<0;hole/=2) {
+		 array[hole]=array[hole/2];
+	 }
+	 array[hole]=x;
+ }
+ public void insert(AnyType x) {
+     if (currentSize == array.length - 1) {
+         enlargeArray(array.length * 2 + 1);
+     }
+     int hole = ++currentSize;
+     percolateUp(hole, x);
+ }
+
+ private void percolateUp(int hole, AnyType x) {
+     while (hole > 1 && x.compareTo(array[hole / 2]) < 0) {
+         array[hole] = array[hole / 2]; // Parent moves down
+         hole /= 2;                     // Move hole up
+     }
+     array[hole] = x;                   // Place x at the correct position
+ }
+ private void enlargeArray(int newSize) {
+	 AnyType [] old = array;
+	 array=(Anytype []) new Comparable [newSize];
+	 for(int i=0;i<old.length;i++) {
+		 array[i]=old[i];
+	 }
+ }
+ public AnyType deleteMin() {
+	 if(isEmpty()) {
+		 throw new UnderflowException();
+	 }
+	 AnyType minItem =findMin();
+	 array[1]=array[currentSize--];
+	 percolateDown(1);
+	 return minItem;
+ }
+ public void percolateDown(int hole) {
+	 int child;
+	 AnyType tmp=array[hole];
+	 for(;hole*2<=currentSize; hole=child){
+		 child=hole*2;
+		 if(child!=currentSize&& array[child+1].compareTo(array[child])<0) {
+			 child++;
+		 }
+		 if(array[child].compareTo(tmp)<0) {
+			 array[hole]=array[child];
+		 }else {
+			 break;
+		 }
+	 }array[hole]=tmp;
+ }
+ private void buildHeap() {
+	 for(int i=currentSize/2;i>0;i--) {
+		 percolateDown(i);
+	 }
+ }
+ public boolean deleteSpecific(T value) {
+	    for (int i = 1; i <= currentSize; i++) {
+	        if (array[i].equals(value)) {
+	            array[i] = array[currentSize--]; // Son eleman ile değiştir
+	            percolateDown(i); // Aşağı hareket ettir
+	            return true; // Başarıyla silindi
+	        }
+	    }
+	    return false; // Eleman bulunamadı
+	}
+ /*private static <T extends Comparable<? super T>> void deleteSpecific(MaxHeap<T> heap, T value) {
+     for (int i = 1; i <= heap.currentSize; i++) {
+         if (heap.array[i].equals(value)) {
+             heap.array[i] = heap.array[heap.currentSize--];
+             heap.percolateDown(i);
+             return;
+         }
+     }
+ }
+
+ private static <T extends Comparable<? super T>> void deleteSpecific(MinHeap<T> heap, T value) {
+     for (int i = 1; i <= heap.currentSize; i++) {
+         if (heap.array[i].equals(value)) {
+             heap.array[i] = heap.array[heap.currentSize--];
+             heap.percolateDown(i);
+             return;
+         }
+     }
+ }*/
+}
+
+public class MaxHeap<AnyType extends Comparable<? super AnyType>> {
+
+    private static final int DEFAULT_CAPACITY = 10;
+    private int currentSize;
+    private AnyType[] array;
+
+    public MaxHeap() {
+        this(DEFAULT_CAPACITY);
+    }
+
+    public MaxHeap(int capacity) {
+        currentSize = 0;
+        array = (AnyType[]) new Comparable[capacity + 1];
+    }
+
+    public MaxHeap(AnyType[] items) {
+        currentSize = items.length;
+        array = (AnyType[]) new Comparable[(currentSize * 2) * 11 / 10];
+        int i = 1;
+        for (AnyType item : items) {
+            array[i++] = item;
+        }
+        buildHeap();
+    }
+
+    public AnyType findMax() {
+        if (isEmpty()) throw new UnderflowException();
+        return array[1];
+    }
+
+    public boolean isEmpty() {
+        return currentSize == 0;
+    }
+
+    public void makeEmpty() {
+        currentSize = 0;
+    }
+
+    public void insert(AnyType x) {
+        if (currentSize == array.length - 1) {
+            enlargeArray(array.length * 2 + 1);
+        }
+        int hole = ++currentSize;
+        percolateUp(hole, x);
+    }
+    public void insert(AnyType x) {
+        if (currentSize == array.length - 1) {
+            enlargeArray(array.length * 2 + 1);
+        }
+        int hole = ++currentSize;
+        for (array[0] = x; hole > 1 && x.compareTo(array[hole / 2]) > 0; hole /= 2) {
+            array[hole] = array[hole / 2];
+        }
+        array[hole] = x;
+    }
+
+    private void percolateUp(int hole, AnyType x) {
+        while (hole > 1 && x.compareTo(array[hole / 2]) > 0) {
+            array[hole] = array[hole / 2];
+            hole /= 2;
+        }
+        array[hole] = x;
+    }
+
+    private void enlargeArray(int newSize) {
+        AnyType[] old = array;
+        array = (AnyType[]) new Comparable[newSize];
+        for (int i = 0; i < old.length; i++) {
+            array[i] = old[i];
+        }
+    }
+
+    public AnyType deleteMax() {
+        if (isEmpty()) throw new UnderflowException();
+        AnyType maxItem = findMax();
+        array[1] = array[currentSize--];
+        percolateDown(1);
+        return maxItem;
+    }
+
+    private void percolateDown(int hole) {
+        int child;
+        AnyType tmp = array[hole];
+        for (; hole * 2 <= currentSize; hole = child) {
+            child = hole * 2;
+            if (child != currentSize && array[child + 1].compareTo(array[child]) > 0) {
+                child++;
+            }
+            if (array[child].compareTo(tmp) > 0) {
+                array[hole] = array[child];
+            } else {
+                break;
+            }
+        }
+        array[hole] = tmp;
+    }
+
+    private void buildHeap() {
+        for (int i = currentSize / 2; i > 0; i--) {
+            percolateDown(i);
+        }
+    }
+
+    public void printHeap() {
+        for (int i = 1; i <= currentSize; i++) {
+            System.out.print(array[i] + " ");
+        }
+        System.out.println();
+    }
+    public boolean deleteSpecific(T value) {
+        for (int i = 1; i <= currentSize; i++) {
+            if (array[i].equals(value)) {
+                array[i] = array[currentSize--]; // Son eleman ile değiştir
+                percolateDown(i); // Aşağı hareket ettir
+                return true; // Başarıyla silindi
+            }
+        }
+        return false; // Eleman bulunamadı
+    }
+    public T findKthLargest(int k) {
+        if (k > currentSize) throw new IllegalArgumentException("K is larger than heap size.");
+        MaxHeap<T> tempHeap = new MaxHeap<>(array); // Heap'i bozmamak için kopya oluştur
+        T result = null;
+        for (int i = 0; i < k; i++) {
+            result = tempHeap.deleteMax(); // K kez deleteMax çağır
+        }
+        return result; // K. en büyük eleman
+    }
+    public void mergeHeap(MaxHeap<T> otherHeap) {
+        for (int i = 1; i <= otherHeap.currentSize; i++) {
+            this.insert(otherHeap.array[i]); // Diğer heap'in elemanlarını bu heap'e ekle
+        }
+    }public List<T> findAllGreaterThan(T x) {
+        List<T> result = new ArrayList<>();
+        findAllGreaterThanHelper(1, x, result);
+        return result;
+    }
+
+    private void findAllGreaterThanHelper(int index, T x, List<T> result) {
+        if (index > currentSize) return; // Heap sınırını aşma
+        if (array[index].compareTo(x) > 0) {
+            result.add(array[index]);
+            findAllGreaterThanHelper(index * 2, x, result); // Sol çocuk
+            findAllGreaterThanHelper(index * 2 + 1, x, result); // Sağ çocuk
+        }
+    }
+    public void replaceValue(T oldValue, T newValue) {
+        for (int i = 1; i <= currentSize; i++) {
+            if (array[i].equals(oldValue)) {
+                array[i] = newValue; // Değeri değiştir
+                percolateDown(i);   // Heap düzenini koru
+                percolateUp(i);     // Heap düzenini koru
+                return;
+            }
+        }
+    }
+    public MinHeap<T> convertToMinHeap() {
+        MinHeap<T> minHeap = new MinHeap<>(array); // Elemanları MinHeap'e ekle
+        return minHeap;
+    }
+    public boolean validateHeap() {
+        for (int i = 1; i <= currentSize / 2; i++) { // Yaprak olmayan düğümleri kontrol et
+            int left = i * 2;
+            int right = i * 2 + 1;
+
+            if (left <= currentSize && array[i].compareTo(array[left]) < 0) return false;
+            if (right <= currentSize && array[i].compareTo(array[right]) < 0) return false;
+        }
+        return true;
+    }
+    public boolean isIdentical(MaxHeap<T> otherHeap) {
+        if (this.currentSize != otherHeap.currentSize) return false;
+        for (int i = 1; i <= currentSize; i++) {
+            if (!this.array[i].equals(otherHeap.array[i])) return false;
+        }
+        return true;
+    }
+    public double calculateAverage() {
+        if (isEmpty()) {
+            throw new UnderflowException();
+        }
+        double sum = 0;
+        for (int i = 1; i <= currentSize; i++) {
+            sum += array[i].doubleValue();  // Her elemanı toplarız
+        }
+        return sum / currentSize;  // Toplamı eleman sayısına böleriz
+    }
+    public int findValueIndex(T value) {
+        for (int i = 1; i <= currentSize; i++) {
+            if (array[i].equals(value)) {
+                return i;  // Bulunan değerin indeksini döndür
+            }
+        }
+        return -1;  // Eğer değer bulunmazsa -1 döndür
+    }
+    public List<AnyType> getTopXElements(int x) {
+        List<AnyType> topXElements = new ArrayList<>();
+        for (int i = 1; i <= x && i <= currentSize; i++) {
+            topXElements.add(array[i]);
+        }
+        return topXElements;
+    }
+    public void insertWithElementSwap(T x) {
+        if (currentSize == array.length - 1) {
+            enlargeArray(array.length * 2 + 1);
+        }
+        int hole = ++currentSize;
+        percolateUp(hole, x);
+    }
+
+    private void percolateUp(int hole, T x) {
+        while (hole > 1 && x.compareTo(array[hole / 2]) < 0) {
+            array[hole] = array[hole / 2];  // Parent'ı aşağı kaydır
+            hole /= 2;  // Yüksel
+        }
+        array[hole] = x;  // Yeni öğeyi doğru yere yerleştir
+    }
+    public int getDepth(int index) {
+        if (index < 1 || index > currentSize) {
+            throw new IndexOutOfBoundsException("Index is out of bounds");
+        }
+        
+        return (int) (Math.log(index) / Math.log(2)); // Logaritma tabanı 2 olan hesaplama
+    }
+
+}
+
