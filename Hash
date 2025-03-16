@@ -1,0 +1,72 @@
+package stack;
+
+public class HashTable {
+    private static int CAPACITY=100;
+    private Integer [] hashtable ;
+    private int size;
+    
+    public HashTable(){
+        hashtable = new Integer[CAPACITY];
+        size=0;
+    }
+    private int hash(int key , int attempt){
+        return (key + attempt * attempt )% CAPACITY;
+    }
+    private void rehash(){
+        CAPACITY*=2;
+        Integer [] oldhash=hashtable;
+        hashtable = new Integer[CAPACITY];
+        size=0;
+        for(Integer var :oldhash){
+            if(var!=null){
+                insert(var);
+            }
+        }
+    }
+    public void insert(int key){
+        if(size>=CAPACITY/2){
+            rehash();
+        }int i=0;
+        int hash;
+        do{
+            hash= hash(key , i);
+            if(hashtable[hash]==null&& !contains(key)){
+                hashtable[hash]=key;
+                size++;
+                return;
+            }
+            i++;
+        }while(i<CAPACITY);
+    }
+    public boolean contains(int key){
+        int i=0;
+        int hash;
+        do{
+            hash=hash(key,i);
+            if(hashtable[hash]!=null&&hashtable[hash]==key){
+                return true;
+            }i++;
+        }while(hashtable[hash]!=null&& i<CAPACITY);
+            return false;
+    }
+    public void delete(int key){
+        int i=0;
+        int hash;
+        do{
+            hash=hash(key,i);
+            if(hashtable[hash]!=null&&hashtable[hash]==key){
+                hashtable[hash]=null;
+                size--;
+                return;
+            }i++;
+
+        }while(hashtable[hash]!=null&& i<CAPACITY);
+    }
+    public void print(){
+        for(int i=0;i<CAPACITY;i++){
+            if(hashtable[i]!=null){
+                System.out.println("Index " + i + ": " + hashtable[i]);
+            }
+        }
+    }
+}
