@@ -1,0 +1,212 @@
+import java.util.ArrayList;
+import java.util.Stack;
+
+class BinaryNode
+{
+    Integer value;
+    BinaryNode leftNode;
+    BinaryNode rightNode;
+
+    public BinaryNode(Integer value)
+    {
+        this.value = value;
+        this.leftNode = null;
+        this.rightNode = null;
+    }
+
+    public BinaryNode(Integer value, BinaryNode leftNode, BinaryNode rightNode) {
+        this.value = value;
+        this.leftNode = leftNode;
+        this.rightNode = rightNode;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
+    }
+
+    public BinaryNode getLeftNode() {
+        return leftNode;
+    }
+
+    public void setLeftNode(BinaryNode leftNode) {
+        this.leftNode = leftNode;
+    }
+
+    public BinaryNode getRightNode() {
+        return rightNode;
+    }
+
+    public void setRightNode(BinaryNode rightNode) {
+        this.rightNode = rightNode;
+    }
+}
+
+ class BST {
+     private BinaryNode rootNode;
+
+     /**
+      * Constructors
+      **/
+     public BST() {
+         this.rootNode = null;
+     }
+
+     public BST(BinaryNode rootNode) {
+         this.rootNode = rootNode;
+     }
+
+     /**
+      * Setters & getters
+      **/
+     public BinaryNode getRootNode() {
+         return rootNode;
+     }
+
+     public void setRootNode(BinaryNode rootNode) {
+         this.rootNode = rootNode;
+     }
+
+     /**
+      * Given member methods
+      **/
+     public void insert(Integer x) {
+         if (x >= 0)
+             setRootNode(insert(getRootNode(), x));
+     }
+
+     // private helper method for public insert method
+     private BinaryNode insert(BinaryNode rootNode, Integer x) {
+         // if the root is null, create a new node and return it
+         if (rootNode == null) {
+             return new BinaryNode(x);
+         }
+
+         // if given key is less than the root node, recur for left subtree
+         if (x < rootNode.value) {
+             rootNode.setLeftNode(insert(rootNode.getLeftNode(), x));
+         }
+
+         // else, recur for right subtree
+         else {
+             // key >= root.data
+             rootNode.setRightNode(insert(rootNode.getRightNode(), x));
+         }
+
+         return rootNode;
+     }
+
+     public void printTreeInorder(BinaryNode root) {
+         if (root == null) {
+             return;
+         }
+
+         printTreeInorder(root.getLeftNode());
+         System.out.print(root.value + " ");
+         printTreeInorder(root.getRightNode());
+     }
+
+     // TODO: converts BST into an inorder traversed arraylist
+     protected ArrayList<Integer> toInorderList(BinaryNode parent, ArrayList<Integer> list) {
+         if (parent == null) {
+             return list;
+         }
+         toInorderList(parent.leftNode, list);
+         list.add(parent.value);
+         toInorderList(parent.rightNode, list);
+         return null;
+     }
+
+     // TODO: remove duplicate elements from BST
+     public Boolean removeDuplicates() {
+         if (rootNode == null) {
+             return false;
+         }
+
+         Stack<BinaryNode> stack = new Stack<>();
+         BinaryNode current = rootNode;
+         Integer lastValue = null;
+         boolean duplicatesFound = false;
+
+         while (current != null || !stack.isEmpty()) {
+             while (current != null) {
+                 stack.push(current);
+                 current = current.leftNode;
+             }
+
+             current = stack.pop();
+
+             if (lastValue != null && lastValue.equals(current.value)) {
+                 duplicatesFound = true;
+
+                 if (current.rightNode != null) {
+                     current.value = current.rightNode.value;
+                     current.rightNode = current.rightNode.rightNode;
+                 } else {
+                     current.value = null;
+                 }
+             } else {
+                 lastValue = current.value;
+             }
+
+             current = current.rightNode;
+         }
+
+         return duplicatesFound;
+
+     }
+
+     // TODO: checks if the BST has unique elements
+
+
+     public Boolean hasUniqueElements() {
+         if (rootNode == null) {
+             return true;
+         }
+         Stack<BinaryNode> stack = new Stack<>();
+         BinaryNode current = rootNode;
+         Integer sondeger = null;
+
+         while (current != null || !stack.isEmpty()) {
+             while (current != null) {
+                 stack.push(current);
+                 current = current.leftNode;
+             }
+             current = stack.pop();
+             if (sondeger != null && sondeger.equals(current.value)) {
+                 return false;
+             }
+             sondeger = current.value;
+             current = current.rightNode;
+         }
+
+             return true;
+     }
+
+     // TODO: finds maximum value in BST
+     public Integer findMax() {
+         if (rootNode == null) {
+             return -1;
+         } else {
+             while (rootNode.rightNode != null) {
+                 rootNode = rootNode.rightNode;
+             }
+             return rootNode.value;
+         }
+     }
+
+     // TODO: finds the zero-indexed depth of the BST
+     public Integer findDepth(BinaryNode node) {
+         if (node == null) {
+             return -1;
+         }
+
+         int leftDepth = findDepth(node.getLeftNode());
+         int rightDepth = findDepth(node.getRightNode());
+
+         return Math.max(leftDepth, rightDepth) + 1;
+     }
+ }
